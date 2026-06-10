@@ -82,6 +82,8 @@ BudgetIQ is an AI-powered personal finance management web application that helps
 <img width="1920" height="1200" alt="Screenshot 2026-06-10 174619" src="https://github.com/user-attachments/assets/ea3899c4-ffbb-4dfd-bf63-ce92436bba5a" />
 <img width="1920" height="1200" alt="Screenshot 2026-06-10 181723" src="https://github.com/user-attachments/assets/6798e92e-f708-4f3c-a9b6-5a05b6fac2e1" />
 <img width="1920" height="1200" alt="Screenshot 2026-06-10 181731" src="https://github.com/user-attachments/assets/e6c62c16-1fd2-417a-b287-e46193145631" />
+<img width="1483" height="945" alt="Screenshot 2026-06-10 190603" src="https://github.com/user-attachments/assets/d0171e47-cc29-45ef-9ec6-b327d50cb712" />
+
 
 
 
