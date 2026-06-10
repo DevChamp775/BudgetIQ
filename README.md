@@ -114,6 +114,24 @@ AI/OCR Services
 - Node.js
 - Express.js
 
+### Database
+- MongoDB
+- Mongoose
+
+### AI & Data Processing
+- Groq API (Llama 3.3 70B)
+- OCR Bill Scanner
+- Julia Programming Language
+
+### Authentication
+- JWT (JSON Web Token)
+- bcrypt.js
+
+### Development Tools
+- Git
+- GitHub
+- VS Code
+
 ### Additional Technologies
 - OCR Integration
 - AI Expense Analysis
