@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Expense Tracker AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+    body { background:#030712; color:white; overflow-x:hidden; }
+
+    .background {
+      position:fixed; width:100%; height:100%;
+      background:
+        radial-gradient(circle at top left,#312e81,transparent 30%),
+        radial-gradient(circle at bottom right,#0f766e,transparent 30%),
+        #030712;
+      z-index:-3;
+    }
+    .grid {
+      position:fixed; width:100%; height:100%;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size:50px 50px;
+      z-index:-2;
+      animation:moveGrid 15s linear infinite;
+    }
+    @keyframes moveGrid { 0%{transform:translateY(0px)} 100%{transform:translateY(50px)} }
+
+    .blur1,.blur2 { position:absolute; border-radius:50%; filter:blur(120px); z-index:-1; }
+    .blur1 { width:300px; height:300px; background:#4f46e5; top:10%; left:5%; }
+    .blur2 { width:300px; height:300px; background:#06b6d4; bottom:10%; right:5%; }
+
+    nav {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:25px 80px; position:sticky; top:0;
+      backdrop-filter:blur(12px);
+      background:rgba(255,255,255,0.03);
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      z-index:100;
+    }
+    .logo {
+      font-size:30px; font-weight:700;
+      background:linear-gradient(to right,#818cf8,#22d3ee);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    nav ul { display:flex; gap:35px; list-style:none; }
+    nav ul li a { color:white; text-decoration:none; transition:0.3s; }
+    nav ul li a:hover { color:#67e8f9; }
+    .login-btn {
+      padding:12px 24px; border-radius:12px;
+      background:linear-gradient(to right,#4f46e5,#06b6d4);
+      text-decoration:none; color:white; font-weight:600;
+      box-shadow:0 0 20px rgba(79,70,229,0.5);
+      transition:0.3s;
+    }
+    .login-btn:hover { transform:translateY(-3px); }
+
+    .hero {
+      min-height:100vh; display:flex; justify-content:space-between;
+      align-items:center; padding:0 80px; position:relative;
+    }
+    .hero-left { width:55%; }
+    .tag {
+      display:inline-block; padding:10px 18px;
+      border:1px solid rgba(255,255,255,0.15); border-radius:30px;
+      background:rgba(255,255,255,0.05); margin-bottom:25px; color:#cbd5e1;
+    }
+    .hero-left h1 { font-size:72px; line-height:1.1; margin-bottom:25px; font-weight:700; }
+    .hero-left h1 span {
+      background:linear-gradient(to right,#818cf8,#22d3ee);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .hero-left p { font-size:20px; color:#cbd5e1; line-height:1.8; margin-bottom:35px; width:90%; }
+    .hero-buttons { display:flex; gap:20px; }
+    .primary-btn {
+      padding:16px 32px; border-radius:14px;
+      background:linear-gradient(to right,#4f46e5,#06b6d4);
+      text-decoration:none; color:white; font-weight:600;
+      box-shadow:0 0 25px rgba(99,102,241,0.6); transition:0.3s;
+    }
+    .primary-btn:hover { transform:translateY(-4px); }
+    .secondary-btn {
+      padding:16px 32px; border-radius:14px;
+      border:1px solid rgba(255,255,255,0.1);
+      text-decoration:none; color:white;
+      background:rgba(255,255,255,0.05); backdrop-filter:blur(10px); transition:0.3s;
+    }
+    .secondary-btn:hover { background:rgba(255,255,255,0.1); }
+
+    .hero-right { width:40%; display:flex; justify-content:center; align-items:center; }
+    .dashboard-preview {
+      width:100%; padding:25px; border-radius:25px;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(18px);
+      box-shadow:0 0 40px rgba(99,102,241,0.25);
+      animation:float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform:translateY(0px); }
+      50% { transform:translateY(-12px); }
+    }
+    .top-cards { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:20px; }
+    .mini-card { padding:20px; border-radius:18px; background:#111827; }
+    .mini-card h3 { color:#94a3b8; font-size:15px; margin-bottom:10px; }
+    .mini-card p { font-size:28px; font-weight:600; }
+    .chart-box {
+      height:220px; border-radius:18px; background:#111827;
+      display:flex; justify-content:center; align-items:center;
+      color:#64748b; font-size:18px; flex-direction:column; gap:10px;
+    }
+    .chart-dot {
+      width:10px; height:10px; border-radius:50%;
+      background:linear-gradient(to right,#818cf8,#22d3ee);
+      animation:pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+
+    .features { padding:120px 80px; }
+    .section-title { text-align:center; margin-bottom:60px; }
+    .section-title h2 { font-size:48px; margin-bottom:15px; }
+    .section-title p { color:#94a3b8; font-size:18px; }
+    .feature-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:30px; }
+    .feature-card {
+      padding:35px; border-radius:24px;
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(15px); transition:0.4s;
+    }
+    .feature-card:hover { transform:translateY(-10px); box-shadow:0 0 35px rgba(99,102,241,0.25); }
+    .feature-icon { font-size:36px; margin-bottom:18px; }
+    .feature-card h3 { font-size:22px; margin-bottom:12px; }
+    .feature-card p { color:#cbd5e1; line-height:1.8; }
+
+    footer {
+      padding:30px; text-align:center; color:#94a3b8;
+      border-top:1px solid rgba(255,255,255,0.08);
+    }
+
+    @media(max-width:1000px) {
+      .hero { flex-direction:column; padding:120px 30px 60px; }
+      .hero-left,.hero-right { width:100%; }
+      .hero-left h1 { font-size:50px; }
+      nav { padding:20px 30px; }
+      .features { padding:100px 30px; }
+    }
+    @media(max-width:600px) {
+      nav ul { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="background"></div>
+<div class="grid"></div>
+<div class="blur1"></div>
+<div class="blur2"></div>
+
+<nav>
+  <div class="logo">ExpenseAI</div>
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="login.html">Login</a></li>
+    <li><a href="signup.html">Sign Up</a></li>
+  </ul>
+  <a href="login.html" class="login-btn">Get Started</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="tag">✨ AI Powered Budget Management Platform</div>
+    <h1>Smart Expense<br><span>Tracker AI</span></h1>
+    <p>
+      Manage budgets, track expenses, analyze spending habits and get powerful
+      AI-driven financial insights. Built with Claude AI, MongoDB, and real-time analytics.
+    </p>
+    <div class="hero-buttons">
+      <a href="signup.html" class="primary-btn">Get Started Free</a>
+      <a href="#features" class="secondary-btn">Explore Features</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="dashboard-preview">
+      <div class="top-cards">
+        <div class="mini-card">
+          <h3>Total Budget</h3>
+          <p>₹50,000</p>
+        </div>
+        <div class="mini-card">
+          <h3>Expenses</h3>
+          <p>₹23,450</p>
+        </div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-dot"></div>
+        AI Analytics Dashboard
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="section-title">
+    <h2>Powerful Smart Features</h2>
+    <p>Everything needed for modern intelligent financial management.</p>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>AI Expense Analysis</h3>
+      <p>Analyze spending patterns and receive smart financial insights powered by Claude AI.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Interactive Graphs</h3>
+      <p>View category-wise expense pie charts, monthly bar charts and smart visual reports.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>Budget Planning</h3>
+      <p>Set monthly budgets and track savings with real-time monitoring and predictions.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <h3>AI Finance Chat</h3>
+      <p>Ask the AI assistant for travel budgets, saving plans and smart money management tips.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Smart Expense Tracker AI © 2025 | Advanced Financial Management System
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ExpenseAI — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+    body {
+      min-height:100vh; background:#030712; overflow:hidden;
+      display:flex; justify-content:center; align-items:center;
+      position:relative; color:white;
+    }
+    .background {
+      position:absolute; width:100%; height:100%;
+      background:
+        radial-gradient(circle at top left,#312e81,transparent 30%),
+        radial-gradient(circle at bottom right,#0891b2,transparent 30%),
+        #030712;
+      z-index:-5;
+    }
+    .grid {
+      position:absolute; width:100%; height:100%;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size:45px 45px;
+      animation:gridMove 15s linear infinite; z-index:-4;
+    }
+    @keyframes gridMove { 0%{transform:translateY(0px)} 100%{transform:translateY(45px)} }
+    .blur1,.blur2 { position:absolute; border-radius:50%; filter:blur(120px); z-index:-3; }
+    .blur1 { width:300px; height:300px; background:#4f46e5; top:-50px; left:-50px; }
+    .blur2 { width:300px; height:300px; background:#06b6d4; bottom:-50px; right:-50px; }
+
+    .container {
+      width:100%; max-width:1200px; display:flex;
+      justify-content:space-between; align-items:center; padding:40px; gap:50px;
+    }
+    .left-section { width:50%; }
+    .tag {
+      display:inline-block; padding:10px 18px; border-radius:30px;
+      background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);
+      color:#cbd5e1; margin-bottom:25px;
+    }
+    .left-section h1 { font-size:65px; line-height:1.1; margin-bottom:25px; }
+    .left-section h1 span {
+      background:linear-gradient(to right,#818cf8,#22d3ee);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .left-section p { font-size:18px; color:#cbd5e1; line-height:1.8; width:90%; }
+
+    .login-box {
+      width:420px; padding:45px; border-radius:30px;
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(20px); box-shadow:0 0 50px rgba(99,102,241,0.2);
+      position:relative; overflow:hidden;
+    }
+    .login-box::before {
+      content:''; position:absolute; width:150px; height:150px;
+      background:#4f46e5; border-radius:50%; top:-70px; right:-70px;
+      filter:blur(80px); opacity:0.6;
+    }
+    .login-box h2 { font-size:36px; margin-bottom:10px; }
+    .subtitle { color:#94a3b8; margin-bottom:35px; font-size:15px; }
+
+    .input-group { margin-bottom:22px; }
+    .input-group label { display:block; margin-bottom:10px; color:#cbd5e1; font-size:14px; }
+    .input-group input {
+      width:100%; padding:15px 18px; border-radius:14px;
+      background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.08);
+      color:white; font-size:15px; outline:none; transition:0.3s;
+    }
+    .input-group input:focus {
+      border-color:#6366f1; box-shadow:0 0 15px rgba(99,102,241,0.4);
+    }
+    .password-box { position:relative; }
+    .toggle-password {
+      position:absolute; right:18px; top:50%; transform:translateY(-50%);
+      cursor:pointer; color:#94a3b8; font-size:14px; user-select:none;
+    }
+    .toggle-password:hover { color:#67e8f9; }
+
+    .extra-options {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:28px; font-size:14px; color:#cbd5e1;
+    }
+    .extra-options a { color:#67e8f9; text-decoration:none; }
+
+    .login-btn {
+      width:100%; padding:16px; border:none; border-radius:16px;
+      background:linear-gradient(to right,#4f46e5,#06b6d4);
+      color:white; font-size:16px; font-weight:600; cursor:pointer;
+      transition:0.3s; box-shadow:0 0 25px rgba(99,102,241,0.4);
+    }
+    .login-btn:hover { transform:translateY(-4px); }
+    .login-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+    .error-msg {
+      background:rgba(244,63,94,0.15); border:1px solid rgba(244,63,94,0.3);
+      color:#fda4af; padding:12px 16px; border-radius:12px;
+      margin-bottom:20px; font-size:14px; display:none;
+    }
+    .success-msg {
+      background:rgba(20,184,166,0.15); border:1px solid rgba(20,184,166,0.3);
+      color:#5eead4; padding:12px 16px; border-radius:12px;
+      margin-bottom:20px; font-size:14px; display:none;
+    }
+
+    .divider {
+      margin:30px 0; display:flex; align-items:center;
+      color:#94a3b8; font-size:14px;
+    }
+    .divider::before,.divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.08); }
+    .divider::before { margin-right:15px; }
+    .divider::after { margin-left:15px; }
+
+    .social-buttons { display:flex; gap:15px; }
+    .social-btn {
+      flex:1; padding:14px; border-radius:14px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.05); color:white;
+      text-align:center; cursor:pointer; transition:0.3s; font-size:14px;
+    }
+    .social-btn:hover { background:rgba(255,255,255,0.1); }
+
+    .signup-link { margin-top:30px; text-align:center; color:#94a3b8; font-size:14px; }
+    .signup-link a { color:#67e8f9; text-decoration:none; font-weight:600; }
+
+    @media(max-width:1000px) {
+      body { overflow:auto; }
+      .container { flex-direction:column; padding:30px; }
+      .left-section { width:100%; text-align:center; }
+      .left-section p { width:100%; }
+      .left-section h1 { font-size:45px; }
+      .login-box { width:100%; max-width:420px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="background"></div>
+<div class="grid"></div>
+<div class="blur1"></div>
+<div class="blur2"></div>
+
+<div class="container">
+  <div class="left-section">
+    <div class="tag">✨ AI Powered Financial Management</div>
+    <h1>Welcome To<br><span>ExpenseAI</span></h1>
+    <p>
+      Smart expense tracking platform with AI budget analysis,
+      financial insights, interactive analytics and intelligent
+      savings recommendations.
+    </p>
+  </div>
+
+  <div class="login-box">
+    <h2>Login</h2>
+    <p class="subtitle">Access your smart finance dashboard</p>
+
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="success-msg" id="successMsg"></div>
+
+    <div class="input-group">
+      <label>Email Address</label>
+      <input type="email" id="login-email" placeholder="Enter your email">
+    </div>
+
+    <div class="input-group">
+      <label>Password</label>
+      <div class="password-box">
+        <input type="password" id="password" placeholder="Enter your password">
+        <span class="toggle-password" onclick="togglePassword()">Show</span>
+      </div>
+    </div>
+
+    <div class="extra-options">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="rememberMe"> Remember me
+      </label>
+      <a href="#">Forgot Password?</a>
+    </div>
+
+    <button class="login-btn" id="loginBtn" onclick="login()">Login</button>
+
+    <div class="divider">OR CONTINUE WITH</div>
+
+    <div class="social-buttons">
+      <div class="social-btn">🔵 Google</div>
+      <div class="social-btn">⚫ GitHub</div>
+    </div>
+
+    <div class="signup-link">
+      Don't have an account? <a href="signup.html">Sign Up</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+    document.getElementById('successMsg').style.display = 'none';
+  }
+
+  function showSuccess(msg) {
+    const el = document.getElementById('successMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+    document.getElementById('errorMsg').style.display = 'none';
+  }
+
+  function togglePassword() {
+    const input = document.getElementById('password');
+    const btn = document.querySelector('.toggle-password');
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = 'Hide';
+    } else {
+      input.type = 'password';
+      btn.textContent = 'Show';
+    }
+  }
+
+  async function login() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('password').value;
+    const btn = document.getElementById('loginBtn');
+
+    if (!email || !password) {
+      showError('Please fill in all fields.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Logging in...';
+
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userEmail', email);
+        showSuccess('Login successful! Redirecting...');
+        setTimeout(() => { window.location = 'dashboard.html'; }, 1000);
+      } else {
+        showError(data.message || 'Invalid credentials. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Login';
+      }
+    } catch (error) {
+      console.error(error);
+      showError('Cannot connect to server. Make sure the backend is running on port 5000.');
+      btn.disabled = false;
+      btn.textContent = 'Login';
+    }
+  }
+
+  // Allow Enter key to submit
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') login();
+  });
+
+  // Fade in
+  window.addEventListener('load', () => {
+    document.body.style.opacity = 0;
+    setTimeout(() => {
+      document.body.style.transition = '0.8s';
+      document.body.style.opacity = 1;
+    }, 100);
+  });
+</script>
+
+</body>
+</html>
